@@ -146,7 +146,7 @@ code{font-family:var(--mono);background:#F1F5F9;padding:.2rem .4rem;border-radiu
 </section>
 
 <section class="paper-section">
-<h2>9. Intended Use and Limits</h2>
+<h2>8. Intended Use and Limits</h2>
 <p>The intended use of the model is <strong>decision support for content prioritization</strong>.</p>
 <ul><li>Rank pages for human review.</li><li>Identify pages with stronger modeled decline signals.</li><li>Provide transparent reason codes.</li><li>Combine predictive signals with observed SEO metrics.</li><li>Help editorial teams allocate limited review capacity.</li></ul>
 <p>The model should not be used to:</p>
@@ -154,7 +154,7 @@ code{font-family:var(--mono);background:#F1F5F9;padding:.2rem .4rem;border-radiu
 </section>
 
 <section class="paper-section">
-<h2>10. Human Review and No-Go Cases</h2>
+<h2>9. Human Review and No-Go Cases</h2>
 <p>Human review remains a required stage between model output and any content intervention. Before changing a page, the reviewer should consider:</p>
 <ol>
 <li><strong>Search intent:</strong> Does the page still satisfy relevant query intent?</li>
@@ -172,21 +172,21 @@ code{font-family:var(--mono);background:#F1F5F9;padding:.2rem .4rem;border-radiu
 </section>
 
 <section class="paper-section">
-<h2>11. Monitoring and Retraining Triggers</h2>
+<h2>10. Monitoring and Retraining Triggers</h2>
 <p>The playbook should be monitored as a decision-support workflow. Relevant indicators include Precision@K on newly labeled periods, the declining-page base rate, model-score distributions, the number of pages entering the queue, and the proportion of queued pages receiving human approval for further investigation.</p>
 <p>The pipeline should be reviewed when feature distributions change substantially, the proportion of declining pages changes materially, client composition changes, new data sources are introduced, the time window changes, or missing-value patterns change.</p>
 <p>Retraining should be considered when newly observed labeled data shows that ranking performance has degraded relative to the previously validated benchmark. Any retrained model should undergo the same leakage audit and client/time-aware validation procedure.</p>
 </section>
 
 <section class="paper-section">
-<h2>12. Cost and Value Considerations</h2>
+<h2>11. Cost and Value Considerations</h2>
 <p>The purpose of ranking is to allocate limited human review capacity. A useful prioritization framework considers both the strength of the model signal and the potential value of investigating a page.</p>
 <ul><li>A high-exposure page with a strong decline signal may justify earlier review.</li><li>A low-exposure page with a similar model score may receive lower priority unless strategically important.</li><li>A page with multiple review signals may warrant deeper investigation.</li><li>A page with weak evidence should not consume the same review resources as a high-value, high-signal candidate.</li></ul>
 <p>This does not imply that the model has measured the financial return of a refresh. The analysis provides a framework for deciding where to spend review effort, not an estimate that a particular intervention will generate a specific amount of additional traffic or revenue.</p>
 </section>
 
 <section class="paper-section">
-<h2>13. Discussion</h2>
+<h2>12. Discussion</h2>
 <p>The analysis demonstrates a progression from predictive modeling to decision support. First, the Week-5 model established a measurable relationship between early-March search-performance signals and the subsequent click-decline label.</p>
 <p>Second, the Week-6 validation audit examined whether the measured result changed when the validation design moved from random row-level splitting to client-grouped evaluation. This distinction is important because a model evaluated on randomly held-out rows may face a different task when applied to clients not represented during training.</p>
 <p>Third, the leakage audit confirmed that the tested feature set uses the first-half observation window while the target is constructed from the later window. Target-derived variables such as <code>clk_last15</code> and <code>is_declining</code> are excluded from the predictor set.</p>
@@ -194,19 +194,9 @@ code{font-family:var(--mono);background:#F1F5F9;padding:.2rem .4rem;border-radiu
 <p>The resulting system should therefore be viewed as a <strong>search-intelligence prioritization tool</strong> rather than an autonomous content optimization system.</p>
 </section>
 
-<section class="paper-section" id="limitations">
-<h2>14. Limitations and Honest Framing</h2>
-<ul>
-<li><strong>Temporal scope:</strong> The target is constructed from a specific March 2026 observation period. Performance in another period may differ.</li>
-<li><strong>Client distribution:</strong> Client-grouped validation provides a more conservative test for unseen clients, but the available client composition limits how broadly the result can be generalized.</li>
-<li><strong>Observational design:</strong> The analysis observes search performance but does not randomly assign refresh interventions. Therefore, it cannot establish that refreshing a flagged page will cause traffic to increase.</li>
-<li><strong>Target definition:</strong> Decline is defined as lower clicks in the later period than the earlier period. This captures a measurable change but does not establish its underlying cause.</li>
-<li><strong>Decision-support interpretation:</strong> A high-ranked page is a candidate for investigation, not proof that a particular content action is required.</li>
-</ul>
-</section>
 
 <section class="paper-section">
-<h2>15. Conclusion</h2>
+<h2>13. Conclusion</h2>
 <p>This study developed a temporal machine-learning workflow for prioritizing pages associated with subsequent click decline. The analysis used first-half March search-performance signals to predict a later-period decline outcome and evaluated the Random Forest model under both random and client-grouped validation.</p>
 <p>The leakage audit separated the feature and outcome windows and excluded variables derived directly from the target. The principal practical output is a ranked action queue that combines the model signal with human-readable reason codes.</p>
 <div class="callout"><strong>Evidence-supported conclusion:</strong> In the evaluated FlyRank dataset, the model provides a measurable signal for ranking pages associated with subsequent click decline. The resulting queue can be used as decision support to prioritize human review, while the available observational evidence does not establish that refreshing a flagged page will improve its search performance.</div>
@@ -214,7 +204,7 @@ code{font-family:var(--mono);background:#F1F5F9;padding:.2rem .4rem;border-radiu
 </section>
 
 <section class="paper-section">
-<h2>16. Reproducibility and Project Artifacts</h2>
+<h2>14. Reproducibility and Project Artifacts</h2>
 <p>The analysis is organized as a sequence of reproducible notebooks and outputs in the FlyRank internship repository.</p>
 <ul>
 <li><strong>Week-5 modeling:</strong> <code>work/notebooks/w05_model.ipynb</code></li>
@@ -227,8 +217,8 @@ code{font-family:var(--mono);background:#F1F5F9;padding:.2rem .4rem;border-radiu
 </section>
 
 <section class="paper-section">
-  <h2>Acknowledgments & data credit</h2>
-<p>Built on the FlyRank ML Internship dataset — https://flyrank.ai — a pseudonymised release of roughly 79 million rows of production search and engagement data. Working on real production data, rather than a tidied teaching set, is what made most of the findings in this paper possible: the client imbalance, the measurement gaps, the drifting base rate and the near-perfect client separability are all properties of real inventory that a clean benchmark would have hidden.</p>
+  <h2>15. Acknowledgments & data credit</h2>
+<p>Built on the FlyRank ML Internship dataset — <a href="https://flyrank.ai">https://flyrank.ai</a> — a pseudonymised release of roughly 79 million rows of production search and engagement data. Working on real production data, rather than a tidied teaching set, is what made most of the findings in this paper possible: the client imbalance, the measurement gaps, the drifting base rate and the near-perfect client separability are all properties of real inventory that a clean benchmark would have hidden.</p>
 
 <p>Thanks to the FlyRank ML Internship programme for the dataset, the weekly structure, and the research paper whose exploratory appendix gave me two methodology questions to ask — and then made me ask the same two questions of my own model, which is where the retractions in §6 came from.
 </p>
