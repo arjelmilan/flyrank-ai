@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predictive Search Intelligence: Machine Learning for Content Decay Prioritization</title>
+<meta name="description" content="A validated machine learning decision-support framework for content decay prioritization using the FlyRank Search Intelligence dataset.">
+<style>
+:root{--bg:#F8FAFC;--text:#0F172A;--muted:#334155;--border:#E2E8F0;--sky:#0EA5E9;--light:#F0F9FF;--heading:'Outfit',sans-serif;--body:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;padding:2rem 1rem}
+.site-nav-container{max-width:860px;margin:0 auto 2rem;display:flex;justify-content:space-between;align-items:center;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.brand{font-family:var(--heading);font-size:1.25rem;font-weight:700;color:var(--text);text-decoration:none}.brand span{color:var(--sky)}
+nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:.9rem}nav a{color:#475569;text-decoration:none}
+.paper-container{max-width:860px;margin:auto;background:#fff;padding:3.5rem 3rem;border-radius:16px;border:1px solid var(--border);box-shadow:0 10px 25px -5px rgba(15,23,42,.05)}
+header.paper-header{border-bottom:2px solid var(--border);padding-bottom:2rem;margin-bottom:2.5rem}
+.journal-tag{font-family:var(--mono);font-size:.85rem;color:var(--sky);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;display:inline-block}
+h1{font-family:var(--heading);font-size:2.5rem;line-height:1.25;margin-bottom:1.25rem}
+.author-block{font-size:1rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:1.5rem}.author-name{font-weight:600;color:var(--text)}
+.abstract-box{background:var(--light);border-left:4px solid var(--sky);padding:1.75rem;border-radius:0 12px 12px 0;margin-bottom:3rem}
+.abstract-box h3{font-family:var(--heading);font-size:1.1rem;color:var(--sky);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
+.abstract-box p,p{color:var(--muted);font-size:1.05rem}.abstract-box p{color:var(--text);line-height:1.75}
+section.paper-section{margin-bottom:3rem}
+h2{font-family:var(--heading);font-size:1.6rem;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+h3.subheading{font-family:var(--heading);font-size:1.15rem;margin:1.5rem 0 .75rem}
+p{margin-bottom:1.25rem}ul,ol{margin-bottom:1.25rem;padding-left:1.5rem;color:var(--muted)}li{margin-bottom:.5rem}
+.table-wrapper{overflow-x:auto;margin:1.5rem 0}table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{padding:.75rem 1rem;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:#F1F5F9;font-family:var(--heading);font-weight:600}
+.metric-highlight{font-family:var(--mono);font-weight:600;color:var(--sky)}
+.placeholder{font-family:var(--mono);color:#D97706;background:#FFFBEB;padding:.15rem .35rem;border-radius:4px}
+code{font-family:var(--mono);background:#F1F5F9;padding:.2rem .4rem;border-radius:4px;font-size:.9em}
+.callout{background:#F8FAFC;border-left:4px solid var(--sky);padding:1rem 1.25rem;margin:1.5rem 0;color:var(--muted)}.callout strong{color:var(--text)}
+.credit-footer{margin-top:4rem;padding-top:2rem;border-top:2px solid var(--border);text-align:center;font-size:.95rem;color:var(--muted)}
+@media(max-width:700px){body{padding:1rem .5rem}.site-nav-container{padding:0 .5rem 1rem}nav{gap:.7rem;font-size:.75rem}.paper-container{padding:2rem 1.25rem}h1{font-size:2rem}}
+</style>
+</head>
+<body>
+<div class="site-nav-container">
+<a href="#" class="brand"><span>[</span> MA <span>]</span> Milan Arjel</a>
+<nav><a href="#introduction">Introduction</a><a href="#methodology">Methodology</a><a href="#results">Results</a><a href="#playbook">Playbook</a><a href="#limitations">Limitations</a></nav>
+</div>
+
+<article class="paper-container">
+
+<header class="paper-header">
+<span class="journal-tag">Applied Search Intelligence · Research Paper</span>
+<h1>Predictive Search Intelligence: Machine Learning for Content Decay Prioritization</h1>
+<div class="author-block">
+<span class="author-name">Milan Arjel</span>
+<span>Computer Engineering · Applied Machine Learning / Search Intelligence</span>
+<span>Lane: Content Opportunity Scoring</span>
+</div>
+</header>
+
+<div class="abstract-box">
+<h3>Abstract</h3>
+<p>Content decay can make it difficult for editorial and SEO teams to determine which pages should be reviewed first. This study investigates whether historical search-performance signals can be used to prioritize pages associated with subsequent click decline. Using the FlyRank Search Intelligence dataset, we construct a temporal prediction task in which features from the first half of March 2026 are used to identify pages whose clicks decline during the second half of the month. The resulting modeling dataset contains <strong>92,247 page-level observations</strong>, with approximately <strong>28.9%</strong> labeled as declining. A Random Forest classifier is evaluated under both random and client-grouped validation designs. The final workflow combines model ranking with human-readable reason codes and produces a ranked review queue. The resulting system is intended as decision support for prioritizing human investigation rather than as an autonomous content-refresh system or a causal estimator of traffic recovery.</p>
+</div>
+
+<section class="paper-section" id="introduction">
+<h2>1. Introduction &amp; Operational Decision Problem</h2>
+<p>Organizations managing large websites may have thousands of published pages competing for limited editorial and SEO resources. Not every page showing weak performance should receive the same level of attention, and manually reviewing every URL can be inefficient.</p>
+<p>The operational question considered in this study is: <strong>Which pages should be prioritized for human review when there are signals associated with subsequent click decline?</strong></p>
+<p>The objective is not to determine automatically whether a page should be refreshed. Instead, the objective is to identify a smaller set of pages that can be investigated first.</p>
+<ul><li>Use information available before the outcome period.</li><li>Evaluate the model using validation designs relevant to the intended use.</li><li>Provide human-readable reasons for why a page was prioritized.</li></ul>
+</section>
+
+<section class="paper-section">
+<h2>2. Dataset &amp; Prediction Target</h2>
+<p>The modeling dataset was constructed at the client-content level using Google Search Console information from March 2026. Features were constructed from the first 15 days of March, while the outcome was derived from the subsequent period.</p>
+<div class="table-wrapper"><table><thead><tr><th>Dataset characteristic</th><th>Value</th></tr></thead><tbody>
+<tr><td>Observations</td><td><span class="metric-highlight">92,247</span></td></tr>
+<tr><td>Declining observations</td><td><span class="metric-highlight">28.9%</span></td></tr>
+<tr><td>Feature window</td><td>March 1–15, 2026</td></tr>
+<tr><td>Outcome window</td><td>March 16–31, 2026</td></tr>
+</tbody></table></div>
+<p>The feature set contains:</p>
+<ul><li><code>imp_first15</code> — total impressions during the first 15 days.</li><li><code>clk_first15</code> — total clicks during the first 15 days.</li><li><code>avg_position_first15</code> — average search position.</li><li><code>ctr_first15</code> — click-through rate.</li><li><code>has_ga4</code> — Google Analytics 4 availability indicator.</li></ul>
+<p>The target is constructed from the later click window:</p>
+<div class="callout"><strong>Decline definition:</strong> <code>is_declining = 1</code> when <code>clk_last15 &lt; clk_first15</code>; otherwise <code>is_declining = 0</code>.</div>
+</section>
+
+<section class="paper-section">
+<h2>3. Temporal Leakage Audit</h2>
+<p>A central requirement of the analysis was to ensure that the model did not use information from the outcome period to predict that same outcome. The feature and target windows were therefore separated temporally.</p>
+<div class="table-wrapper"><table><thead><tr><th>Component</th><th>Period / Variable</th><th>Role</th></tr></thead><tbody>
+<tr><td>Impressions</td><td>March 1–15</td><td>Predictor</td></tr>
+<tr><td>Clicks</td><td>March 1–15</td><td>Predictor</td></tr>
+<tr><td>Average position</td><td>March 1–15</td><td>Predictor</td></tr>
+<tr><td>CTR</td><td>March 1–15</td><td>Predictor</td></tr>
+<tr><td>GA4 availability</td><td>March 1–15</td><td>Predictor</td></tr>
+<tr><td>Clicks</td><td>March 16–31</td><td>Outcome</td></tr>
+<tr><td><code>clk_last15</code></td><td>March 16–31</td><td>Target construction only</td></tr>
+<tr><td><code>is_declining</code></td><td>Derived from later clicks</td><td>Target only</td></tr>
+</tbody></table></div>
+<p>The later-period variable <code>clk_last15</code> is used to construct the target but is not included as a model feature. Likewise, <code>is_declining</code> is excluded from the predictor matrix.</p>
+<p>The final tested feature set therefore shows no direct label-derived feature leakage or temporal overlap between the feature and outcome windows. This reduces direct leakage risk but does not establish generalization beyond the tested period and client population.</p>
+</section>
+
+<section class="paper-section" id="methodology">
+<h2>4. Modeling &amp; Validation</h2>
+<p>A Random Forest classifier was used to model the binary decline outcome. The Week-5 analysis considered two validation designs: a random row-level split and a client-grouped split.</p>
+<div class="table-wrapper"><table><thead><tr><th>Validation design</th><th>What it tests</th><th>Interpretation</th></tr></thead><tbody>
+<tr><td><strong>Random row split</strong></td><td>Randomly held-out observations</td><td>Performance when rows are randomly separated</td></tr>
+<tr><td><strong>Client-grouped split</strong></td><td>Clients not represented in training</td><td>More conservative estimate for unseen clients</td></tr>
+</tbody></table></div>
+<p>The client-grouped evaluation is important because multiple content observations may belong to the same client. A random row-level split can therefore allow client-specific patterns to appear in both training and evaluation data.</p>
+<p>The difference between these validation designs is itself a finding: it indicates how sensitive the measured ranking performance is to the definition of an independent evaluation unit.</p>
+</section>
+
+<section class="paper-section" id="results">
+<h2>5. Experimental Results</h2>
+<div class="table-wrapper"><table><thead><tr><th>Validation design</th><th>Precision@50</th><th>Base rate</th><th>Difference</th></tr></thead><tbody>
+<tr><td>Random row split</td><td><span class="placeholder">78%</span></td><td>24%</td><td>54%</td></tr>
+<tr><td>Client-grouped split</td><td><span class="placeholder">64%</span></td><td>46%%</td><td>18%</td></tr>
+<tr><td><strong>Validation-design difference</strong></td><td><span class="placeholder">14%</span></td><td>22%</td><td><span class="placeholder">-</span></td></tr>
+</tbody></table></div>
+<p>If performance decreases under client-grouped validation, the observed difference indicates that some of the random-split performance may depend on repeated client-level patterns. If the results remain similar, the ranking signal is less sensitive to the client grouping used in the evaluation.</p>
+<div class="callout"><strong>Honest interpretation:</strong> The Random Forest provides a measurable ranking signal for pages associated with subsequent click decline in the evaluated data. The model does not establish that refreshing a flagged page will cause traffic to increase.</div>
+</section>
+
+<section class="paper-section">
+<h2>6. Feature and Signal Interpretation</h2>
+<h3 class="subheading">6.1 Search Exposure</h3>
+<p><code>imp_first15</code> measures how often a page appeared in search results during the first half of March. Pages with substantial search exposure may receive higher review priority because changes in their search performance affect a larger observed volume of search interactions.</p>
+<h3 class="subheading">6.2 Click-Through Rate</h3>
+<p><code>ctr_first15</code> describes the proportion of impressions that resulted in clicks. A relatively low observed CTR can provide a reason for human investigation, particularly when a page also receives substantial impressions.</p>
+<h3 class="subheading">6.3 Average Search Position</h3>
+<p><code>avg_position_first15</code> provides context about observed search position. A relatively weak position can be included as a review signal, but it should not be interpreted as proof that position caused the later decline.</p>
+<h3 class="subheading">6.4 Model Decline Signal</h3>
+<p>The model provides the primary predictive ranking signal. Pages receiving stronger model scores are placed higher in the review queue, subject to the validation framework.</p>
+</section>
+
+
+<section class="paper-section">
+<h2>7. Archetype-to-Action Mapping</h2>
+<div class="table-wrapper"><table><thead><tr><th>Page Archetype</th><th>Observed Signals</th><th>Suggested Human Review</th></tr></thead><tbody>
+<tr><td>High-exposure decline candidate</td><td>Strong model signal + high impressions</td><td>Review content freshness, search intent, competitors and business importance.</td></tr>
+<tr><td>CTR opportunity</td><td>Strong model signal + relatively low CTR</td><td>Review title, snippet, search intent and SERP presentation.</td></tr>
+<tr><td>Position concern</td><td>Strong model signal + weak average position</td><td>Review topical coverage, relevance, internal linking and competitive context.</td></tr>
+<tr><td>Multiple-signal candidate</td><td>Model signal + multiple supporting signals</td><td>Prioritize for deeper SEO/content investigation.</td></tr>
+<tr><td>Weak/low-volume signal</td><td>Model signal but limited supporting exposure</td><td>Review only if strategically important.</td></tr>
+</tbody></table></div>
+<div class="callout"><strong>Important:</strong> The mapping stops at review recommendations. A category such as “CTR opportunity” does not automatically trigger a title rewrite.</div>
+</section>
+
+<section class="paper-section">
+<h2>9. Intended Use and Limits</h2>
+<p>The intended use of the model is <strong>decision support for content prioritization</strong>.</p>
+<ul><li>Rank pages for human review.</li><li>Identify pages with stronger modeled decline signals.</li><li>Provide transparent reason codes.</li><li>Combine predictive signals with observed SEO metrics.</li><li>Help editorial teams allocate limited review capacity.</li></ul>
+<p>The model should not be used to:</p>
+<ul><li>Automatically publish content changes.</li><li>Automatically rewrite titles or page content.</li><li>Guarantee traffic recovery.</li><li>Determine that a page definitely needs refreshing.</li><li>Claim that an SEO intervention causes improved performance.</li><li>Represent one portfolio's results as a universal model of Google's ranking system.</li></ul>
+</section>
+
+<section class="paper-section">
+<h2>10. Human Review and No-Go Cases</h2>
+<p>Human review remains a required stage between model output and any content intervention. Before changing a page, the reviewer should consider:</p>
+<ol>
+<li><strong>Search intent:</strong> Does the page still satisfy relevant query intent?</li>
+<li><strong>Content freshness:</strong> Has the underlying information become outdated?</li>
+<li><strong>SERP context:</strong> Have competing results or search-result layouts changed?</li>
+<li><strong>Business importance:</strong> Is the page strategically important?</li>
+<li><strong>Cannibalization:</strong> Is another page targeting the same search intent?</li>
+<li><strong>Technical factors:</strong> Are indexing, canonicalization or internal linking involved?</li>
+<li><strong>Seasonality:</strong> Could the decline reflect normal seasonal demand?</li>
+<li><strong>External events:</strong> Could changes in demand explain the observed pattern?</li>
+</ol>
+<h3 class="subheading">No-Go Cases</h3>
+<ul><li>Weak model signal.</li><li>Insufficient search exposure.</li><li>Obvious technical or indexing issue.</li><li>Unusual seasonal demand.</li><li>High-stakes factual or regulatory content requiring specialist review.</li><li>Insufficient context to determine search intent.</li><li>Conflict with known business constraints.</li><li>Use outside the population or period for which the model was evaluated.</li></ul>
+<div class="callout"><strong>No autonomous action:</strong> The model output is a review queue, not an autonomous content-action queue.</div>
+</section>
+
+<section class="paper-section">
+<h2>11. Monitoring and Retraining Triggers</h2>
+<p>The playbook should be monitored as a decision-support workflow. Relevant indicators include Precision@K on newly labeled periods, the declining-page base rate, model-score distributions, the number of pages entering the queue, and the proportion of queued pages receiving human approval for further investigation.</p>
+<p>The pipeline should be reviewed when feature distributions change substantially, the proportion of declining pages changes materially, client composition changes, new data sources are introduced, the time window changes, or missing-value patterns change.</p>
+<p>Retraining should be considered when newly observed labeled data shows that ranking performance has degraded relative to the previously validated benchmark. Any retrained model should undergo the same leakage audit and client/time-aware validation procedure.</p>
+</section>
+
+<section class="paper-section">
+<h2>12. Cost and Value Considerations</h2>
+<p>The purpose of ranking is to allocate limited human review capacity. A useful prioritization framework considers both the strength of the model signal and the potential value of investigating a page.</p>
+<ul><li>A high-exposure page with a strong decline signal may justify earlier review.</li><li>A low-exposure page with a similar model score may receive lower priority unless strategically important.</li><li>A page with multiple review signals may warrant deeper investigation.</li><li>A page with weak evidence should not consume the same review resources as a high-value, high-signal candidate.</li></ul>
+<p>This does not imply that the model has measured the financial return of a refresh. The analysis provides a framework for deciding where to spend review effort, not an estimate that a particular intervention will generate a specific amount of additional traffic or revenue.</p>
+</section>
+
+<section class="paper-section">
+<h2>13. Discussion</h2>
+<p>The analysis demonstrates a progression from predictive modeling to decision support. First, the Week-5 model established a measurable relationship between early-March search-performance signals and the subsequent click-decline label.</p>
+<p>Second, the Week-6 validation audit examined whether the measured result changed when the validation design moved from random row-level splitting to client-grouped evaluation. This distinction is important because a model evaluated on randomly held-out rows may face a different task when applied to clients not represented during training.</p>
+<p>Third, the leakage audit confirmed that the tested feature set uses the first-half observation window while the target is constructed from the later window. Target-derived variables such as <code>clk_last15</code> and <code>is_declining</code> are excluded from the predictor set.</p>
+<p>Finally, the Week-7 playbook converts the validated model output into a ranked review queue with explicit reason codes and human-review rules.</p>
+<p>The resulting system should therefore be viewed as a <strong>search-intelligence prioritization tool</strong> rather than an autonomous content optimization system.</p>
+</section>
+
+<section class="paper-section" id="limitations">
+<h2>14. Limitations and Honest Framing</h2>
+<ul>
+<li><strong>Temporal scope:</strong> The target is constructed from a specific March 2026 observation period. Performance in another period may differ.</li>
+<li><strong>Client distribution:</strong> Client-grouped validation provides a more conservative test for unseen clients, but the available client composition limits how broadly the result can be generalized.</li>
+<li><strong>Observational design:</strong> The analysis observes search performance but does not randomly assign refresh interventions. Therefore, it cannot establish that refreshing a flagged page will cause traffic to increase.</li>
+<li><strong>Target definition:</strong> Decline is defined as lower clicks in the later period than the earlier period. This captures a measurable change but does not establish its underlying cause.</li>
+<li><strong>Decision-support interpretation:</strong> A high-ranked page is a candidate for investigation, not proof that a particular content action is required.</li>
+</ul>
+</section>
+
+<section class="paper-section">
+<h2>15. Conclusion</h2>
+<p>This study developed a temporal machine-learning workflow for prioritizing pages associated with subsequent click decline. The analysis used first-half March search-performance signals to predict a later-period decline outcome and evaluated the Random Forest model under both random and client-grouped validation.</p>
+<p>The leakage audit separated the feature and outcome windows and excluded variables derived directly from the target. The principal practical output is a ranked action queue that combines the model signal with human-readable reason codes.</p>
+<div class="callout"><strong>Evidence-supported conclusion:</strong> In the evaluated FlyRank dataset, the model provides a measurable signal for ranking pages associated with subsequent click decline. The resulting queue can be used as decision support to prioritize human review, while the available observational evidence does not establish that refreshing a flagged page will improve its search performance.</div>
+<p>This distinction between <strong>prediction, prioritization, and intervention</strong> is central to using the model responsibly and provides a practical foundation for further evaluation with controlled refresh experiments.</p>
+</section>
+
+<section class="paper-section">
+<h2>16. Reproducibility and Project Artifacts</h2>
+<p>The analysis is organized as a sequence of reproducible notebooks and outputs in the FlyRank internship repository.</p>
+<ul>
+<li><strong>Week-5 modeling:</strong> <code>work/notebooks/w05_model.ipynb</code></li>
+<li><strong>Week-6 validation audit:</strong> <code>work/notebooks/w06_validation_audit.ipynb</code></li>
+<li><strong>Week-7 action playbook:</strong> <code>work/notebooks/w07_action_playbook.ipynb</code></li>
+<li><strong>Ranked action queue:</strong> <code>work/outputs/w07_ranked_action_queue.csv</code></li>
+<li><strong>Reusable figures:</strong> <code>work/figures/</code></li>
+<li><strong>Metrics receipts:</strong> committed metrics JSON files</li>
+</ul>
+</section>
+
+<footer class="credit-footer">
+<p>Built as part of the FlyRank ML Internship · Content Opportunity Scoring</p>
+<p style="margin-top:.5rem;font-size:.85rem;color:#64748B">© 2026 Milan Arjel · Applied Machine Learning / Search Intelligence</p>
+</footer>
+
+</article>
+</body>
+</html>
